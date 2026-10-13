@@ -111,4 +111,4 @@ other applications may work better with different choices. If you plan to use th
 please get in touch first: I'm glad to help adapt the selection to your science case and to share
 practical caveats about the sample.
 
-Write me an emial at `greta.toni4@unibo.it`.
+Write me an email at `greta.toni4@unibo.it`.
