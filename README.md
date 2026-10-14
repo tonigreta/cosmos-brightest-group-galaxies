@@ -4,7 +4,8 @@
 [![DOI](https://img.shields.io/badge/DOI-10.1051%2F0004--6361%2F202659640-informational)](https://doi.org/10.1051/0004-6361/202659640)
 
 Catalogues of **brightest group/cluster galaxies (BGGs)** for the groups and clusters of the
-**AMICO-COSMOS** catalogue. There is one catalogue for each AMICO detection band: *r*, *Y* and *H*.
+**AMICO-COSMOS** catalogue. The release has one catalogue for each AMICO detection band (*r*, *Y*
+and *H*) and a **merged catalogue** for the 490 systems detected in all three runs.
 
 This release accompanies:
 
@@ -25,9 +26,11 @@ If you use these catalogues, please cite the paper above (see [Citation](#citati
 | `<BGG_catalogue_r>` | *r* | BGGs of the systems detected with the *r* band as reference |
 | `<BGG_catalogue_Y>` | *Y* | BGGs of the systems detected with the *Y* band as reference |
 | `<BGG_catalogue_H>` | *H* | BGGs of the systems detected with the *H* band as reference |
+| `<BGG_catalogue_merged>` | *r*, *Y*, *H* | Cross-match of the 490 systems detected in all three runs, with their BGGs in each band |
 | `README.md` | – | This file |
 
-Each catalogue has one row per AMICO-COSMOS system detected in that band.
+Each single-band catalogue has one row per AMICO-COSMOS system detected in that band. The merged
+catalogue has one row per system detected in all three bands.
 
 ## Parent sample
 
@@ -35,7 +38,8 @@ The groups and clusters come from **AMICO-COSMOS** (Toni et al. 2024). It was ob
 the AMICO detection algorithm on the COSMOS2020 and COSMOS2015 galaxy catalogues and contains
 1269 systems over an effective area of about 1.69 deg². AMICO was run three times, with the *r*, *Y*
 and *H* bands as reference. The BGG selection was applied to each run separately, which gives the
-three catalogues released here.
+three single-band catalogues. The 490 systems recovered in all three runs were then matched to
+build the merged catalogue.
 
 ## Selection method
 
@@ -59,29 +63,50 @@ Besides the magnitude gap, each BGG has two scores that indicate how reliable th
 
 ## Catalogue columns
 
+### Single-band catalogues (*r*, *Y*, *H*)
+
 All three catalogues have the same columns. Distances are in **degrees** and magnitudes refer to
 the detection band of the catalogue. Missing values are `NaN`.
 
 | Column | Unit | Description |
 |---|---|---|
 | `cluster_id` | – | AMICO-COSMOS system ID |
+| `bcg1_prob_score` | – | Probability score of the BGG |
+| `bcg1_dist_score` | R200 | Distance score of the BGG |
 | `bcg1_galaxy_id` | – | ID of the selected BGG |
 | `bcg1_magnitude` | mag | Apparent magnitude of the BGG |
 | `bcg1_distance` | deg | Projected distance of the BGG from the centre |
 | `bcg1_membership_probability` | – | AMICO membership probability of the BGG |
-| `bcg1_prob_score` | – | Probability score of the BGG |
-| `bcg1_dist_score` | R200 | Distance score of the BGG |
 | `bcg2_*` | | Same quantities for the second-ranked galaxy |
 | `magnitude_gap` | mag | m(2nd brightest) − m(brightest), always ≥ 0 |
 | `swapped` | bool | `True` if the tie-break replaced the brightest galaxy |
 
+### Merged catalogue (490 systems)
+
+The merged catalogue links each system across the three runs and lists its BGG and second-ranked
+galaxy in every band. To get the full properties of a galaxy (magnitudes, scores, distances), join
+on the corresponding `cluster_id_*` column with the single-band catalogue.
+
+| Column | Description |
+|---|---|
+| `cluster_id_r` | System ID in the *r*-band catalogue |
+| `cluster_id_y` | System ID in the *Y*-band catalogue |
+| `cluster_id_h` | System ID in the *H*-band catalogue |
+| `r_bcg1_galaxy_id` | ID of the BGG selected in the *r* band |
+| `r_bcg2_galaxy_id` | ID of the second-ranked galaxy in the *r* band |
+| `y_bcg1_galaxy_id` | ID of the BGG selected in the *Y* band |
+| `y_bcg2_galaxy_id` | ID of the second-ranked galaxy in the *Y* band |
+| `h_bcg1_galaxy_id` | ID of the BGG selected in the *H* band |
+| `h_bcg2_galaxy_id` | ID of the second-ranked galaxy in the *H* band |
+
 ### Notes
 
-- A system has `NaN` BGG entries if no galaxy passed the cuts, or if R200 could not be computed
-  at its redshift.
-- Systems detected in more than one band appear in more than one catalogue, and the BGG chosen may
-  differ between bands.
-- **Secure BGGs** can be identified by a large magnitude gap (≥ 0.5 mag), a probability score
+- A system without a second-ranked BGG entry is a system where no other galaxy passed the cuts.
+- Systems detected in more than one band appear in more than one single-band catalogue, and the BGG
+  chosen may differ between bands. The merged catalogue makes this easy to check: a system whose
+  `r_bcg1_galaxy_id`, `y_bcg1_galaxy_id` and `h_bcg1_galaxy_id` all agree has a BGG that is robust
+  against the choice of detection band.
+- **Secure BGGs** can also be identified by a large magnitude gap, a probability score
   close to 1 and a small distance score.
 
 ## Citation
@@ -101,7 +126,7 @@ the detection band of the catalogue. Missing values are `NaN`.
 ```
 
 If you use the parent sample, please also cite the AMICO-COSMOS catalogue paper (Toni et al. 2024)
-and the COSMOS2020 catalogue (Weaver et al. 2022).
+and the galaxy catalogues COSMOS2020 (Weaver et al. 2022) and COSMOS2015 (Laigle et al. 2016).
 
 ## Contact
 
